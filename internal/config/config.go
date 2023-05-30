@@ -5,7 +5,7 @@ import (
 
 	"github.com/brocaar/chirpstack-api/go/v3/nc"
 	"github.com/brocaar/lorawan"
-	"github.com/brocaar/lorawan/band"
+	"github.com/wujun8/lorawan/band"
 )
 
 // Version defines the ChirpStack Network Server version.

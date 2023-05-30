@@ -62,7 +62,7 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: |
-            chirpstack/${{ github.event.repository.name }}
+            wujun8/${{ github.event.repository.name }}
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}

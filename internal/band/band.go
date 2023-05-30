@@ -5,7 +5,7 @@ import (
 
 	"github.com/brocaar/chirpstack-network-server/v3/internal/config"
 	"github.com/brocaar/lorawan"
-	loraband "github.com/brocaar/lorawan/band"
+	loraband "github.com/wujun8/lorawan/band"
 )
 
 var band loraband.Band

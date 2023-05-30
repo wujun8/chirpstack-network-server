@@ -24,7 +24,7 @@ import (
 	"github.com/brocaar/chirpstack-network-server/v3/internal/storage"
 	"github.com/brocaar/chirpstack-network-server/v3/internal/test"
 	"github.com/brocaar/lorawan"
-	loraband "github.com/brocaar/lorawan/band"
+	loraband "github.com/wujun8/lorawan/band"
 )
 
 type NetworkServerAPITestSuite struct {

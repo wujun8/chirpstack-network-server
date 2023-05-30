@@ -22,7 +22,7 @@ import (
 	"github.com/brocaar/chirpstack-network-server/v3/internal/uplink"
 	"github.com/brocaar/lorawan"
 	"github.com/brocaar/lorawan/backend"
-	loraband "github.com/brocaar/lorawan/band"
+	loraband "github.com/wujun8/lorawan/band"
 )
 
 type RejoinTestSuite struct {

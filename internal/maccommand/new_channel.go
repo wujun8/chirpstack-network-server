@@ -11,7 +11,7 @@ import (
 	"github.com/brocaar/chirpstack-network-server/v3/internal/logging"
 	"github.com/brocaar/chirpstack-network-server/v3/internal/storage"
 	"github.com/brocaar/lorawan"
-	"github.com/brocaar/lorawan/band"
+	"github.com/wujun8/lorawan/band"
 )
 
 // RequestNewChannels creates or modifies the non-common bi-directional

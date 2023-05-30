@@ -38,6 +38,7 @@ require (
 	google.golang.org/grpc v1.33.1
 	google.golang.org/protobuf v1.28.1
 	pack.ag/amqp v0.12.1
+	github.com/wujun8/lorawan v0.0.0-20230530101639-e122cb1980c7
 )
 
 require (

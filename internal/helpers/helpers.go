@@ -12,7 +12,7 @@ import (
 	"github.com/brocaar/chirpstack-api/go/v3/as"
 	"github.com/brocaar/chirpstack-api/go/v3/common"
 	"github.com/brocaar/chirpstack-api/go/v3/gw"
-	"github.com/brocaar/lorawan/band"
+	"github.com/wujun8/lorawan/band"
 	"github.com/pkg/errors"
 )
 

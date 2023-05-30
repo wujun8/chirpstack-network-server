@@ -7,7 +7,7 @@ import (
 
 	"github.com/brocaar/chirpstack-network-server/v3/adr"
 	"github.com/brocaar/chirpstack-network-server/v3/internal/band"
-	loraband "github.com/brocaar/lorawan/band"
+	loraband "github.com/wujun8/lorawan/band"
 )
 
 // LRFHSSHandler implements a LR-FHSS only ADR handler.

@@ -10,7 +10,7 @@ import (
 	"github.com/brocaar/chirpstack-network-server/v3/internal/storage"
 	"github.com/brocaar/chirpstack-network-server/v3/internal/test"
 	"github.com/brocaar/lorawan"
-	"github.com/brocaar/lorawan/band"
+	"github.com/wujun8/lorawan/band"
 )
 
 func TestNewChannel(t *testing.T) {
