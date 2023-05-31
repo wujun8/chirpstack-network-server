@@ -608,12 +608,20 @@ func setTXInfoForRX1(ctx *dataContext) error {
 		return errors.Wrap(err, "set downlink tx-info data-rate error")
 	}
 
+	log.WithFields(log.Fields{
+		"freq_from_uplink": ctx.RXPacket.TXInfo.Frequency,
+	}).Debug("downlink/Rx1")
+
 	// get rx1 frequency
 	freq, err := band.Band().GetRX1FrequencyForUplinkFrequency(ctx.RXPacket.TXInfo.Frequency)
 	if err != nil {
 		return errors.Wrap(err, "get rx1 frequency error")
 	}
 	txInfo.Frequency = freq
+
+	log.WithFields(log.Fields{
+		"freq": freq,
+	}).Debug("downlink/Rx1 Frequency")
 
 	// get timestamp
 	delay := band.Band().GetDefaults().ReceiveDelay1
@@ -646,6 +654,10 @@ func setTXInfoForRX1(ctx *dataContext) error {
 		},
 		RemainingPayloadSize: plSize.N,
 	})
+
+	log.WithFields(log.Fields{
+		"txInfo": txInfo.String(),
+	}).Debug("downlink/Rx1")
 
 	return nil
 }
@@ -709,6 +721,11 @@ func setTXInfoForRX2(ctx *dataContext) error {
 		},
 		RemainingPayloadSize: plSize.N,
 	})
+
+
+	log.WithFields(log.Fields{
+		"txInfo": txInfo.String(),
+	}).Debug("downlink/Rx2")
 
 	return nil
 }
