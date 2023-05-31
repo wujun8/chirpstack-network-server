@@ -30,7 +30,7 @@ require (
 	github.com/spf13/viper v1.4.0
 	github.com/streadway/amqp v0.0.0-20190827072141-edfb9018d271
 	github.com/stretchr/testify v1.7.0
-	github.com/wujun8/lorawan v0.0.0-20230530113845-be842c880382
+	github.com/wujun8/lorawan v0.0.0-20230531052323-96399e27c836
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b
 	golang.org/x/net v0.8.0
 	golang.org/x/tools v0.6.0
