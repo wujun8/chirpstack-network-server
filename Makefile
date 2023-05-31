@@ -1,4 +1,4 @@
-.PHONY: build clean test package serve update-vendor api
+.PHONY: build clean package serve update-vendor api
 VERSION := $(shell git describe --always |sed -e "s/^v//")
 API_VERSION := $(shell go list -m -f '{{ .Version }}' github.com/brocaar/chirpstack-api/go/v3 | awk '{n=split($$0, a, "-"); print a[n]}')
 

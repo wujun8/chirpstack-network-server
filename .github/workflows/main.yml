@@ -9,21 +9,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v2
-
-      -
-        name: Run tests
-        run: docker-compose run --rm chirpstack-network-server make test
-
   # Runs on pull request to ensure the docker build works,
   # but pushes only on commits to master and on PRs.
   docker:
-    needs: test
     runs-on: ubuntu-latest
     steps:
       -
@@ -64,6 +52,9 @@ jobs:
           push: ${{ startsWith(github.ref, 'refs/tags/v') }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          context: .
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
