@@ -620,7 +620,16 @@ func setTXInfoForRX1(ctx *dataContext) error {
 	txInfo.Frequency = freq
 
 	log.WithFields(log.Fields{
-		"freq": freq,
+		"freq": txInfo.Frequency,
+	}).Debug("downlink/Rx1 GetRX1FrequencyForUplinkFrequency")
+
+	rx1Freq := config.Get().NetworkServer.NetworkSettings.RX1Frequency
+	if rx1Freq > 0 {
+		txInfo.Frequency = uint32(rx1Freq)
+	}
+
+	log.WithFields(log.Fields{
+		"freq": txInfo.Frequency,
 	}).Debug("downlink/Rx1 Frequency")
 
 	// get timestamp

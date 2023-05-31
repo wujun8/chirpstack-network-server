@@ -58,6 +58,7 @@ type Config struct {
 			RXWindow                int      `mapstructure:"rx_window"`
 			RX1Delay                int      `mapstructure:"rx1_delay"`
 			RX1DROffset             int      `mapstructure:"rx1_dr_offset"`
+			RX1Frequency            int64    `mapstructure:"rx1_frequency"`
 			RX2DR                   int      `mapstructure:"rx2_dr"`
 			RX2Frequency            int64    `mapstructure:"rx2_frequency"`
 			RX2PreferOnRX1DRLt      int      `mapstructure:"rx2_prefer_on_rx1_dr_lt"`
