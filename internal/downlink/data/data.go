@@ -654,6 +654,11 @@ func setTXInfoForRX1(ctx *dataContext) error {
 	// get remaining payload size
 	plSize, err := band.Band().GetMaxPayloadSizeForDataRateIndex(ctx.DeviceProfile.MACVersion, ctx.DeviceProfile.RegParamsRevision, rx1DR)
 	if err != nil {
+		log.WithFields(log.Fields{
+			"MACVersion": ctx.DeviceProfile.MACVersion,
+			"RegParamsRevision": ctx.DeviceProfile.RegParamsRevision,
+			"rx1DR": rx1DR,
+		}).Error("downlink/Rx1 GetMaxPayloadSize")
 		return errors.Wrap(err, "get max-payload size error")
 	}
 

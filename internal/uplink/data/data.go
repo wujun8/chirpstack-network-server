@@ -658,7 +658,12 @@ func saveDeviceSession(ctx *dataContext) error {
 func handleUplinkACK(ctx *dataContext) error {
 	qi, err := storage.GetPendingDeviceQueueItemForDevEUI(ctx.ctx, storage.DB(), ctx.DeviceSession.DevEUI)
 	if err != nil {
-		if err != storage.ErrDoesNotExist {
+		if err == storage.ErrDoesNotExist {
+			log.WithFields(log.Fields{
+				"dev_eui": ctx.DeviceSession.DevEUI,
+				"ctx_id":  ctx.ctx.Value(logging.ContextIDKey),
+			}).Info("get device-queue item not exist")
+		} else {
 			log.WithFields(log.Fields{
 				"dev_eui": ctx.DeviceSession.DevEUI,
 				"ctx_id":  ctx.ctx.Value(logging.ContextIDKey),
@@ -680,7 +685,12 @@ func handleUplinkACK(ctx *dataContext) error {
 	}
 
 	if err := storage.DeleteDeviceQueueItem(ctx.ctx, storage.DB(), qi.ID); err != nil {
-		return errors.Wrap(err, "delete device-queue item error")
+		err = errors.Wrap(err, "delete device-queue item error")
+		log.WithFields(log.Fields{
+			"dev_eui": ctx.DeviceSession.DevEUI,
+			"ctx_id":  ctx.ctx.Value(logging.ContextIDKey),
+		}).WithError(err)
+		return err
 	}
 
 	_, err = ctx.ApplicationServerClient.HandleDownlinkACK(ctx.ctx, &as.HandleDownlinkACKRequest{

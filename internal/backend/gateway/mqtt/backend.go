@@ -62,7 +62,7 @@ func NewBackend(c config.Config) (gateway.Gateway, error) {
 		rxPacketChan:      make(chan gw.UplinkFrame),
 		statsPacketChan:   make(chan gw.GatewayStats),
 		downlinkTXAckChan: make(chan gw.DownlinkTXAck),
-		gatewayMarshaler:  make(map[lorawan.EUI64]marshaler.Type),
+		gatewayMarshaler:  marshaler.JSON,
 		eventTopic:        conf.EventTopic,
 		qos:               conf.QOS,
 		downMode:          c.NetworkServer.Gateway.Backend.MultiDownlinkFeature,
