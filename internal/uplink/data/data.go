@@ -656,16 +656,17 @@ func saveDeviceSession(ctx *dataContext) error {
 }
 
 func handleUplinkACK(ctx *dataContext) error {
-	if !ctx.MACPayload.FHDR.FCtrl.ACK {
-		return nil
-	}
-
 	qi, err := storage.GetPendingDeviceQueueItemForDevEUI(ctx.ctx, storage.DB(), ctx.DeviceSession.DevEUI)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"dev_eui": ctx.DeviceSession.DevEUI,
-			"ctx_id":  ctx.ctx.Value(logging.ContextIDKey),
-		}).WithError(err).Error("get device-queue item error")
+		if err != storage.ErrDoesNotExist {
+			log.WithFields(log.Fields{
+				"dev_eui": ctx.DeviceSession.DevEUI,
+				"ctx_id":  ctx.ctx.Value(logging.ContextIDKey),
+			}).WithError(err).Error("get device-queue item error")
+		}
+		return nil
+	}
+	if !ctx.MACPayload.FHDR.FCtrl.ACK && qi.Confirmed {
 		return nil
 	}
 	if qi.FCnt != ctx.DeviceSession.NFCntDown-1 {
