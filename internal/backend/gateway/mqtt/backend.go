@@ -62,7 +62,7 @@ func NewBackend(c config.Config) (gateway.Gateway, error) {
 		rxPacketChan:      make(chan gw.UplinkFrame),
 		statsPacketChan:   make(chan gw.GatewayStats),
 		downlinkTXAckChan: make(chan gw.DownlinkTXAck),
-		gatewayMarshaler:  marshaler.JSON,
+		gatewayMarshaler:  make(map[lorawan.EUI64]marshaler.Type),
 		eventTopic:        conf.EventTopic,
 		qos:               conf.QOS,
 		downMode:          c.NetworkServer.Gateway.Backend.MultiDownlinkFeature,
@@ -369,7 +369,11 @@ func (b *Backend) getGatewayMarshaler(gatewayID lorawan.EUI64) marshaler.Type {
 	b.RLock()
 	defer b.RUnlock()
 
-	return b.gatewayMarshaler[gatewayID]
+	if t, ok := b.gatewayMarshaler[gatewayID]; ok {
+		return t
+	}
+
+	return marshaler.JSON
 }
 
 // isLocked returns if a lock exists for the given key, if false a lock is
