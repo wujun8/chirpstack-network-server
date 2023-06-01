@@ -656,23 +656,36 @@ func saveDeviceSession(ctx *dataContext) error {
 }
 
 func handleUplinkACK(ctx *dataContext) error {
-	qi, err := storage.GetPendingDeviceQueueItemForDevEUI(ctx.ctx, storage.DB(), ctx.DeviceSession.DevEUI)
-	if err != nil {
-		if err == storage.ErrDoesNotExist {
-			log.WithFields(log.Fields{
-				"dev_eui": ctx.DeviceSession.DevEUI,
-				"ctx_id":  ctx.ctx.Value(logging.ContextIDKey),
-			}).Info("get device-queue item not exist")
-		} else {
+	var qi storage.DeviceQueueItem
+
+	if ctx.MACPayload.FHDR.FCtrl.ACK {
+		it, err := storage.GetPendingDeviceQueueItemForDevEUI(ctx.ctx, storage.DB(), ctx.DeviceSession.DevEUI)
+		if err != nil {
 			log.WithFields(log.Fields{
 				"dev_eui": ctx.DeviceSession.DevEUI,
 				"ctx_id":  ctx.ctx.Value(logging.ContextIDKey),
 			}).WithError(err).Error("get device-queue item error")
+			return nil
 		}
-		return nil
-	}
-	if !ctx.MACPayload.FHDR.FCtrl.ACK && qi.Confirmed {
-		return nil
+		qi = it
+	} else {
+		it, _, err := storage.GetNextDeviceQueueItemForDevEUI(ctx.ctx, storage.DB(), ctx.DeviceSession.DevEUI)
+		if err != nil {
+			if errors.Cause(err) == storage.ErrDoesNotExist {
+				// no downlink in queue
+				return nil
+			} else {
+				log.WithFields(log.Fields{
+					"dev_eui": ctx.DeviceSession.DevEUI,
+					"ctx_id":  ctx.ctx.Value(logging.ContextIDKey),
+				}).WithError(err).Error("get next device-queue item error")
+				return err
+			}
+		}
+		qi = it
+		if qi.Confirmed {
+			return nil
+		}
 	}
 	if qi.FCnt != ctx.DeviceSession.NFCntDown-1 {
 		log.WithFields(log.Fields{
@@ -685,21 +698,24 @@ func handleUplinkACK(ctx *dataContext) error {
 	}
 
 	if err := storage.DeleteDeviceQueueItem(ctx.ctx, storage.DB(), qi.ID); err != nil {
-		err = errors.Wrap(err, "delete device-queue item error")
 		log.WithFields(log.Fields{
 			"dev_eui": ctx.DeviceSession.DevEUI,
 			"ctx_id":  ctx.ctx.Value(logging.ContextIDKey),
-		}).WithError(err)
+		}).WithError(err).Error("delete device-queue item error")
 		return err
 	}
 
-	_, err = ctx.ApplicationServerClient.HandleDownlinkACK(ctx.ctx, &as.HandleDownlinkACKRequest{
+	_, err := ctx.ApplicationServerClient.HandleDownlinkACK(ctx.ctx, &as.HandleDownlinkACKRequest{
 		DevEui:       ctx.DeviceSession.DevEUI[:],
 		FCnt:         qi.FCnt,
 		Acknowledged: true,
 	})
 	if err != nil {
-		return errors.Wrap(err, "application-server client error")
+		log.WithFields(log.Fields{
+			"dev_eui": ctx.DeviceSession.DevEUI,
+			"ctx_id":  ctx.ctx.Value(logging.ContextIDKey),
+		}).WithError(err).Error("application-server client error")
+		return err
 	}
 
 	return nil
