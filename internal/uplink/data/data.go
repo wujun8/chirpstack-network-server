@@ -668,6 +668,15 @@ func handleUplinkACK(ctx *dataContext) error {
 			return nil
 		}
 		qi = it
+		if qi.FCnt != ctx.DeviceSession.NFCntDown-1 {
+			log.WithFields(log.Fields{
+				"dev_eui":                  ctx.DeviceSession.DevEUI,
+				"device_queue_item_fcnt":   qi.FCnt,
+				"device_session_fcnt_down": ctx.DeviceSession.NFCntDown,
+				"ctx_id":                   ctx.ctx.Value(logging.ContextIDKey),
+			}).Error("frame-counter of device-queue item out of sync with device-session")
+			return nil
+		}
 	} else {
 		it, _, err := storage.GetNextDeviceQueueItemForDevEUI(ctx.ctx, storage.DB(), ctx.DeviceSession.DevEUI)
 		if err != nil {
@@ -686,15 +695,6 @@ func handleUplinkACK(ctx *dataContext) error {
 		if qi.Confirmed {
 			return nil
 		}
-	}
-	if qi.FCnt != ctx.DeviceSession.NFCntDown-1 {
-		log.WithFields(log.Fields{
-			"dev_eui":                  ctx.DeviceSession.DevEUI,
-			"device_queue_item_fcnt":   qi.FCnt,
-			"device_session_fcnt_down": ctx.DeviceSession.NFCntDown,
-			"ctx_id":                   ctx.ctx.Value(logging.ContextIDKey),
-		}).Error("frame-counter of device-queue item out of sync with device-session")
-		return nil
 	}
 
 	if err := storage.DeleteDeviceQueueItem(ctx.ctx, storage.DB(), qi.ID); err != nil {
