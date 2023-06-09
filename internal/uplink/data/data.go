@@ -705,17 +705,19 @@ func handleUplinkACK(ctx *dataContext) error {
 		return err
 	}
 
-	_, err := ctx.ApplicationServerClient.HandleDownlinkACK(ctx.ctx, &as.HandleDownlinkACKRequest{
-		DevEui:       ctx.DeviceSession.DevEUI[:],
-		FCnt:         qi.FCnt,
-		Acknowledged: true,
-	})
-	if err != nil {
-		log.WithFields(log.Fields{
-			"dev_eui": ctx.DeviceSession.DevEUI,
-			"ctx_id":  ctx.ctx.Value(logging.ContextIDKey),
-		}).WithError(err).Error("application-server client error")
-		return err
+	if ctx.MACPayload.FHDR.FCtrl.ACK {
+		_, err := ctx.ApplicationServerClient.HandleDownlinkACK(ctx.ctx, &as.HandleDownlinkACKRequest{
+			DevEui:       ctx.DeviceSession.DevEUI[:],
+			FCnt:         qi.FCnt,
+			Acknowledged: true,
+		})
+		if err != nil {
+			log.WithFields(log.Fields{
+				"dev_eui": ctx.DeviceSession.DevEUI,
+				"ctx_id":  ctx.ctx.Value(logging.ContextIDKey),
+			}).WithError(err).Error("application-server client error")
+			return err
+		}
 	}
 
 	return nil
